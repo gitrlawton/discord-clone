@@ -16,7 +16,7 @@ export const list = query({
 });
 
 // Mutation to create a new message.
-export const reate = mutation({
+export const create = mutation({
   args: {
     sender: v.string(),
     content: v.string(),
