@@ -11,9 +11,24 @@ export default defineSchema({
     username: v.string(),
     image: v.string(),
     clerkId: v.string(),
-    // Adding an index to this table, in order to quickly access a user by their
-    // Clerk ID.  Name the index and an array of fields we want to include in it.
-  }).index("by_clerk_id", ["clerkId"]),
+  })
+    // Adding indices to this table, in order to quickly access a user by their
+    // Clerk ID and by their username.  Give the index a name and an array of fields
+    // we want to include in it.
+    .index("by_clerk_id", ["clerkId"])
+    .index("by_username", ["username"]),
+  // Define a friends table
+  friends: defineTable({
+    user1: v.id("users"),
+    user2: v.id("users"),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("accepted"),
+      v.literal("rejected")
+    ),
+  })
+    .index("by_user1_status", ["user1", "status"])
+    .index("by_user2_status", ["user2", "status"]),
   // Define a messages table
   messages: defineTable({
     // Table properties and their types.
