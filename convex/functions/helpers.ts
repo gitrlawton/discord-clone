@@ -1,3 +1,5 @@
+// This file contains a custom query and mutation for authenticated users.
+
 import {
   customCtx,
   customMutation,

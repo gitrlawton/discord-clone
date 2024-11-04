@@ -5,10 +5,7 @@ import { QueryCtx } from "../_generated/server";
 import { Id } from "../_generated/dataModel";
 import { v } from "convex/values";
 
-// For getting accepted friends.
-
-// Look for whether user1 or user2 matches the current user
-// as long as the status is accepted.
+// For getting a list of accepted friends.
 export const listAccepted = authenticatedQuery({
   handler: async (ctx) => {
     // Retrieve all of the friend requests where you are user2 and the
@@ -34,7 +31,7 @@ export const listAccepted = authenticatedQuery({
   },
 });
 
-// For getting pending friends.
+// For getting a list of pending friend requests.
 export const listPending = authenticatedQuery({
   handler: async (ctx) => {
     // Retrieve all of the friend requests where you are user2 and the
