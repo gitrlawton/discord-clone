@@ -1,10 +1,12 @@
-// User-defined file which contains functions to use to interact with messages table.
+// User-defined file which contains functions to use to interact with the messages
+// table (ie our Messages API).
 
 // Helper to define a query or mutation.  A query is a function that fetches data, a
 // mutation is a function that modifies it.
 import { mutation, query } from "../_generated/server";
 import { v } from "convex/values";
 import { authenticatedMutation, authenticatedQuery } from "./helpers";
+import { internal } from "../_generated/api";
 
 // Query to return all messages.
 export const list = authenticatedQuery({
@@ -74,6 +76,13 @@ export const create = authenticatedMutation({
       content,
       directMessage,
       sender: ctx.user._id,
+    });
+
+    // Call remove to delete the typing indicator once the user has sent
+    // the message.
+    await ctx.scheduler.runAfter(0, internal.functions.typing.remove, {
+      directMessage,
+      user: ctx.user._id,
     });
   },
 });

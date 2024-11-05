@@ -44,4 +44,11 @@ export default defineSchema({
     content: v.string(),
     directMessage: v.id("directMessages"),
   }).index("by_direct_message", ["directMessage"]),
+  typingIndicators: defineTable({
+    user: v.id("users"),
+    directMessage: v.id("directMessages"),
+    expiresAt: v.number(),
+  })
+    .index("by_direct_message", ["directMessage"]) // Used to fetch everyone who is currently typing in a DM thread.
+    .index("by_user_direct_message", ["user", "directMessage"]), // Used to figure out if a user already has a typing indicator in the database or if we need to create one.
 });

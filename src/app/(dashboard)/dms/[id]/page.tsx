@@ -26,9 +26,7 @@ export default function MessagePage({
   params: Promise<{ id: Id<"directMessages"> }>;
 }) {
   const { id } = use(params);
-
   const directMessage = useQuery(api.functions.dm.get, { id });
-
   const messages = useQuery(api.functions.message.list, { directMessage: id });
 
   if (!directMessage) {
@@ -51,7 +49,29 @@ export default function MessagePage({
           <MessageItem key={message._id} message={message} />
         ))}
       </ScrollArea>
+      <TypingIndicator directMessage={id} />
       <MessageInput directMessage={id} />
+    </div>
+  );
+}
+
+// Component to display typing indicator.
+function TypingIndicator({
+  directMessage,
+}: {
+  directMessage: Id<"directMessages">;
+}) {
+  // Fetch the usernames who are currently typing.
+  const usernames = useQuery(api.functions.typing.list, { directMessage });
+
+  if (!usernames || usernames.length === 0) {
+    return null;
+  }
+
+  // Return div that says the user(s) are typing.
+  return (
+    <div className="text-sm text-muted-foreground px-4 py-2">
+      {usernames.join(", ")} is typing...
     </div>
   );
 }
@@ -117,6 +137,7 @@ function MessageInput({
 }) {
   const [content, setContent] = useState("");
   const sendMessage = useMutation(api.functions.message.create);
+  const sendTypingIndicator = useMutation(api.functions.typing.upsert);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -138,6 +159,12 @@ function MessageInput({
         placeholder="Message"
         value={content}
         onChange={(e) => setContent(e.target.value)}
+        onKeyDown={(e) => {
+          // Trigger typing indicator.
+          if (content.length > 0) {
+            sendTypingIndicator({ directMessage });
+          }
+        }}
       />
       <Button size="icon">
         <SendIcon />
