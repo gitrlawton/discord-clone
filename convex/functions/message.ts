@@ -77,3 +77,23 @@ export const create = authenticatedMutation({
     });
   },
 });
+
+// Function to delete a DM (message).
+export const remove = authenticatedMutation({
+  args: {
+    id: v.id("messages"),
+  },
+  handler: async (ctx, { id }) => {
+    // Fetch the message.
+    const message = await ctx.db.get(id);
+
+    if (!message) {
+      throw new Error("Message does not exist.");
+    } else if (message.sender !== ctx.user._id) {
+      throw new Error("You are not the sender of this message.");
+    }
+
+    // Delete the message.
+    await ctx.db.delete(id);
+  },
+});
