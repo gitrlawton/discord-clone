@@ -40,10 +40,15 @@ export const list = authenticatedQuery({
       messages.map(async (message) => {
         // ..fetch its sender.
         const sender = await ctx.db.get(message.sender);
+        // Fetch the attachment URL (if there is one.)
+        const attachment = message.attachment
+          ? await ctx.storage.getUrl(message.attachment)
+          : undefined;
 
-        // Return the message with the sender object.
+        // Return the message with the attachment and the sender object.
         return {
           ...message,
+          attachment,
           sender,
         };
       })
@@ -55,9 +60,10 @@ export const list = authenticatedQuery({
 export const create = authenticatedMutation({
   args: {
     content: v.string(),
+    attachment: v.optional(v.id("_storage")),
     directMessage: v.id("directMessages"),
   },
-  handler: async (ctx, { content, directMessage }) => {
+  handler: async (ctx, { content, attachment, directMessage }) => {
     // Fetch the member record for verification.  We want to make sure
     // they are a member of this DM thread before allowing them to send
     // a message.
@@ -74,6 +80,7 @@ export const create = authenticatedMutation({
 
     await ctx.db.insert("messages", {
       content,
+      attachment,
       directMessage,
       sender: ctx.user._id,
     });
@@ -104,5 +111,18 @@ export const remove = authenticatedMutation({
 
     // Delete the message.
     await ctx.db.delete(id);
+    // If it has an attachment, delete it.
+    if (message.attachment) {
+      await ctx.storage.delete(message.attachment);
+    }
+  },
+});
+
+// Mutation to generate upload URL for attachment.
+export const generateUploadUrl = authenticatedMutation({
+  // Will not accept any inputs, but the handler is going to call...
+  handler: async (ctx) => {
+    // And return...
+    return await ctx.storage.generateUploadUrl();
   },
 });
