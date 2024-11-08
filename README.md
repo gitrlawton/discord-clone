@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chatstarter
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project is a chat application that allows users to add friends and send direct messages. It utilizes Convex for serverless functions and Clerk for authentication.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Direct Messaging**: Users can send and receive direct messages with other users.
+- **Friend Management**: Users can send friend requests, accept or decline them, and view their friends list.
+- **User Authentication**: Secure user authentication is handled through Clerk, allowing users to sign up and log in.
+- **User Profiles**: Users can create and update their profiles, including usernames and profile images.
+- **Real-time Updates**: The application provides real-time updates for messages and friend requests.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Installation
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To set up the project, ensure you have Node.js installed on your machine. Then, follow these steps:
 
-## Learn More
+1. Clone the repository:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install the required packages:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```bash
+   npm install
+   ```
 
-## Deploy on Vercel
+3. Create a `.env.local` file in the root directory and add your environment variables:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```plaintext
+   CONVEX_DEPLOYMENT=<your_convex_deployment>
+   NEXT_PUBLIC_CONVEX_URL=<your_convex_url>
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your_clerk_publishable_key>
+   CLERK_SECRET_KEY=<your_clerk_secret_key>
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Start the Convex server:
+
+   ```bash
+   npx convex dev
+   ```
+
+5. Start the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Open your browser and navigate to `http://localhost:3000`.
+
+## Usage
+
+1. Sign up or log in using your Google account.
+2. Use the "Add Friend" button to send friend requests to other users.
+3. View your pending and accepted friend requests in the friends list.
+4. Start direct messages with your friends by clicking on their names.
+5. Send and receive messages in real-time.
+
+## File Descriptions
+
+- **convex/functions/**: Contains serverless functions for handling messages, direct messages, friends, and user management.
+- **src/app/(dashboard)/\_components/**: Contains React components for the dashboard, including friend lists and direct message functionality.
+- **src/app/(dashboard)/page.tsx**: The Friends page of the application. It displays a list of accepted and pending friend requests.
+- **src/app/(dashboard)/dms/[id]/page.tsx**: The DMs page displaying all the messages in a direct message thread between you and a particular user.
+- **convex/auth.config.ts**: Configuration for Clerk authentication.
+
+## Dependencies
+
+- **Convex**: For serverless functions and database management.
+- **Clerk**: For user authentication and management.
+- **React**: For building the user interface.
+- **Next.js**: For server-side rendering and routing.
+- **Tailwind CSS**: For styling the application.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
